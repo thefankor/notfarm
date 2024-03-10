@@ -4,6 +4,16 @@ import json
 
 import telebot
 import datetime
+
+
+def print_log(e):
+    a = str(datetime.datetime.now() + datetime.timedelta(hours=0))
+    print(e)
+    a = open('logs//' + a + '-excep.txt', 'w')
+    a.write(e)
+    a.close()
+
+
 def get_one():
 
     url = 'https://api.getgems.io/graphql'
@@ -29,33 +39,42 @@ def get_one():
         'extensions': '{"persistedQuery":{"version":1,"sha256Hash":"566aab5b51f3a22f10b7ae0acbed38d14f7466f042a8dcbf98b260ba6c52bd33"}}'
     }
 
-    response = requests.get(url, headers=headers, params=params)
+    try:
+        response = requests.get(url, headers=headers, params=params)
 
-    if response.status_code == 200:
-        try:
-            ans = response.text
-            di = json.loads(ans)
-            name = di['data']['alphaNftItemSearch']['edges'][0]['node']['name']
-            price = int(di['data']['alphaNftItemSearch']['edges'][0]['node']['sale']['fullPrice'])/10**9
-            adr_col = di['data']['alphaNftItemSearch']['edges'][0]['node']['address']
-            adr_id = di['data']['alphaNftItemSearch']['edges'][0]['node']['ownerAddress']
-            add = 'https://getgems.io/collection/'+adr_col+'/'+adr_id
-            return {'name': name, 'price': price, 'address': add}
-        except Exception as e:
-            print(e)
-            return None
-    else:
-        return ('Ошибка запроса:', response.status_code)
-        print('Ошибка запроса:', response.status_code)
+        if response.status_code == 200:
+            try:
+                ans = response.text
+                di = json.loads(ans)
+                name = di['data']['alphaNftItemSearch']['edges'][0]['node']['name']
+                price = int(di['data']['alphaNftItemSearch']['edges'][0]['node']['sale']['fullPrice'])/10**9
+                adr_col = di['data']['alphaNftItemSearch']['edges'][0]['node']['address']
+                adr_id = di['data']['alphaNftItemSearch']['edges'][0]['node']['ownerAddress']
+                add = 'https://getgems.io/collection/'+adr_col+'/'+adr_id
+                return {'name': name, 'price': price, 'address': add}
+            except Exception as e:
+                print(e)
+                return None
+        else:
+            print('Ошибка запроса:', response.status_code)
+            print_log('Ошибка запроса: '+str(response.status_code))
+            return ('Ошибка запроса:', response.status_code)
+    except Exception as ex:
+        print('/RESP Ошибка запроса:', str(ex))
+        print_log('/RESP Ошибка запроса: ' +str(ex))
+        return ('/RESP Ошибка запроса:', str(ex))
+
 
 
 
 TOKEN_BOT = '2137380397:AAE5M-KsMuWxMQtJftw1WA4rhYJtWLrPRz4'
 PUBLIC_ID = '@ftnotifi'
-
-bot = telebot.TeleBot(TOKEN_BOT)
-ntime = '00:00'
-bot.edit_message_text(chat_id=PUBLIC_ID, message_id=3, text='starting')
+try:
+    bot = telebot.TeleBot(TOKEN_BOT)
+    ntime = '00:00'
+    bot.edit_message_text(chat_id=PUBLIC_ID, message_id=3, text='starting')
+except Exception as ebot:
+    print_log('STARTBOT:::'+str(ebot))
 while True:
     obj = get_one()
     try:
