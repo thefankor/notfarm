@@ -97,4 +97,4 @@ while True:
             bot.edit_message_text(chat_id=PUBLIC_ID, message_id=3, text=ntime+' '+str(obj['price']))
         except:
             bot.edit_message_text(chat_id=PUBLIC_ID, message_id=3, text=ntime)
-    time.sleep(30)
+    time.sleep(22)
