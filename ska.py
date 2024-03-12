@@ -79,7 +79,7 @@ while True:
     obj = get_one()
     try:
         # print(obj)
-        if obj['price']<35:
+        if obj['price']<25:
             print(obj)
             try:
                 MES = f"{obj['price']} - {obj['name']}\n {obj['address']}"
@@ -97,4 +97,4 @@ while True:
             bot.edit_message_text(chat_id=PUBLIC_ID, message_id=3, text=ntime+' '+str(obj['price']))
         except:
             bot.edit_message_text(chat_id=PUBLIC_ID, message_id=3, text=ntime)
-    time.sleep(40)
+    time.sleep(30)
