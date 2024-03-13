@@ -79,7 +79,7 @@ while True:
     obj = get_one()
     try:
         # print(obj)
-        if obj['price']<19:
+        if obj['price']<14:
             print(obj)
             try:
                 MES = f"{obj['price']} - {obj['name']}\n {obj['address']}"
